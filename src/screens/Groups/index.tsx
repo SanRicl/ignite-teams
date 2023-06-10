@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Container } from "./styles";
 import Header from "@components/Header";
 import Highlight from "@components/Highlight";
@@ -6,16 +6,32 @@ import GroupCard from "@components/GroupCard";
 import { FlatList } from "react-native";
 import ListEmpty from "@components/ListEmpty";
 import Button from "@components/Button";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { groupsGetAll } from "@storage/group/groupsGetAll";
 
 const Groups = () => {
-  const [group, setGroup] = useState([]);
- 
-  const navigation = useNavigation()
- 
+  const [group, setGroup] = useState<string[]>([]);
+
+  const navigation = useNavigation();
+
   const handleNewGroup = () => {
-    navigation.navigate('new')
-  }
+    navigation.navigate("new");
+  };
+
+  const fetchGroups = async () => {
+    try {
+      const data = await groupsGetAll();
+      setGroup(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchGroups();
+    }, [])
+  );
 
   return (
     <Container>
@@ -32,7 +48,7 @@ const Groups = () => {
         )}
         showsVerticalScrollIndicator={false}
       />
-      <Button title="Criar nova turma"  onPress={handleNewGroup}/>
+      <Button title="Criar nova turma" onPress={handleNewGroup} />
     </Container>
   );
 };
