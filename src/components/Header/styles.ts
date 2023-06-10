@@ -12,7 +12,6 @@ export const Container = styled.View`
 export const Logo = styled.Image`
   width: 50px;
   height: 60px;
-  margin-top: ${Platform.OS === "ios" ? "30px" : "0px"};
 `;
 
 export const BackButton = styled.TouchableOpacity`
